@@ -5,6 +5,7 @@ import (
 	"golang.org/x/net/websocket"
 	"io"
 	"net/http"
+	"time"
 )
 
 // Allow all origins
@@ -84,11 +85,21 @@ func (s *Server) broadcast(msg []byte) {
 	}
 }
 
+func (s *Server) handleWSOrderbook(ws *websocket.Conn) {
+	fmt.Println("New incoming connection from client:", ws.RemoteAddr())
+	for {
+		payload := fmt.Sprintf("orderbook data ->%d\n", time.Now().UnixNano())
+		ws.Write([]byte(payload))
+		time.Sleep(2 * time.Second)
+	}
+}
+
 func testStandard() {
 	server := NewServer()
 
 	// Apply CORS fix
 	http.Handle("/ws", allowAllOrigins(websocket.Handler(server.handleWS)))
+	http.Handle("/orderbook", allowAllOrigins(websocket.Handler(server.handleWSOrderbook)))
 
 	fmt.Println("WebSocket server started on ws://localhost:8080/ws")
 	err := http.ListenAndServe(":8080", nil)

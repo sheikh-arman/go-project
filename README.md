@@ -15,6 +15,10 @@ go build -o live-chat
 expose the websocket on ws://localhost:8080/ws
 
 
+orderbook api on ws://localhost:8080/orderbook 
+orderbook will fetch data in every 2 second
+
+
 
 
 
