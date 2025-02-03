@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"golang.org/x/net/websocket"
+	"io"
 	"net/http"
 )
 
@@ -54,17 +55,32 @@ func (s *Server) readLoop(ws *websocket.Conn) {
 		n, err := ws.Read(buf)
 
 		if err != nil {
-			fmt.Println("Client disconnected or read error:", err)
-			break
+			if err == io.EOF {
+				fmt.Println("Client disconnected or read error:", err)
+				break
+			}
+			fmt.Println("read error:", err)
+			continue
 		}
 		msg := buf[0:n]
 		fmt.Println("Received:", string(msg))
+		s.broadcast(msg)
 
-		_, err = ws.Write([]byte("Thank you for the message"))
-		if err != nil {
-			fmt.Println("Write error:", err)
-			break
-		}
+		//for single client write
+		//_, err = ws.Write([]byte("Thank you for the message"))
+		//if err != nil {
+		//	fmt.Println("Write error:", err)
+		//}
+	}
+}
+
+func (s *Server) broadcast(msg []byte) {
+	for ws := range s.conns {
+		go func(ws *websocket.Conn) {
+			if _, err := ws.Write(msg); err != nil {
+				fmt.Println("Write error:", err)
+			}
+		}(ws)
 	}
 }
 
