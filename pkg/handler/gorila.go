@@ -1,3 +1,7 @@
+//
+
+// real time chat with gorilla websocket
+
 package handler
 
 import (

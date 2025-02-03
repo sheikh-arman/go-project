@@ -12,9 +12,7 @@ go build -o live-chat
 
 ./live-chat start
 
-cobra-cli add sub2 --parent start
-
-
+expose the websocket on ws://localhost:8080/ws
 
 
 

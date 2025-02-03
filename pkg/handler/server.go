@@ -11,5 +11,6 @@ func Handle() {
 
 	log.Info().Msg("Starting Handle server")
 	log.Error().Msg("This is not error actually")
-	test()
+	//test()
+	testStandard()
 }
