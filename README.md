@@ -6,6 +6,8 @@ cobra-cli init
 
 cobra-cli add start
 
+cobra-cli add subcommand --parent startCmd
+
 go build -o live-chat
 
 ./live-chat start
