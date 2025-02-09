@@ -10,23 +10,27 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/chi/v5"
+	chiro "github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
 	"github.com/lestrrat-go/jwx/jwa"
-	"github.com/lestrrat-go/jwx/jwt"
 	"github.com/sheikh-arman/api-server/newsfeed"
 )
 
-var jwtkey = []byte("adsads")
-var TokenAuth *jwtauth.JWTAuth
-var tokenString string
-var token jwt.Token
+var (
+	jwtkey    = []byte("adsads")
+	TokenAuth *jwtauth.JWTAuth
+	// tokenString string
+	// token       jwt.Token
+)
 
-var ID int
-var feeds []newsfeed.Item
-var feeds2 map[int]newsfeed.Item
-var Credslist map[string]string
-var refreshTokens = make(map[string]string) // Refresh Token স্টোর করার জন্য
+var (
+	ID            int
+	feeds         []newsfeed.Item
+	feeds2        map[int]newsfeed.Item
+	Credslist     map[string]string
+	refreshTokens = make(map[string]string) // Refresh Token স্টোর করার জন্য
+)
+
 func InitCred() {
 	TokenAuth = jwtauth.New(string(jwa.HS256), jwtkey, nil)
 	Credslist = make(map[string]string)
@@ -51,7 +55,7 @@ func InitDB() {
 		Title: "Nothing",
 		Post:  "Lorem Ipsum Doller Site",
 	}
-	//feeds2[ID] = feed
+	// feeds2[ID] = feed
 	ID++
 	feeds = append(feeds, feed)
 
@@ -60,7 +64,7 @@ func InitDB() {
 		Title: "Nothing2",
 		Post:  "Lorem Ipsum Doller Site2",
 	}
-	//feeds2[ID] = feed
+	// feeds2[ID] = feed
 	ID++
 	feeds = append(feeds, feed)
 
@@ -69,7 +73,7 @@ func InitDB() {
 		Title: "Nothing3",
 		Post:  "Lorem Ipsum Doller Site3",
 	}
-	//feeds2[ID] = feed
+	// feeds2[ID] = feed
 	ID++
 	feeds = append(feeds, feed)
 }
@@ -77,7 +81,8 @@ func InitDB() {
 func WriteJsonResponse(w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
+	err := json.NewEncoder(w).Encode(data)
+	log.Println(err)
 }
 
 func GetNewsFeeds(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +94,7 @@ func GetNewsFeeds(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetNewsFeed(w http.ResponseWriter, r *http.Request) {
-	param := chi.URLParam(r, "id")
+	param := chiro.URLParam(r, "id")
 	paramsID, _ := strconv.Atoi(param)
 
 	for _, curFeed := range feeds {
@@ -113,9 +118,10 @@ func CreateNewsFeed(w http.ResponseWriter, r *http.Request) {
 	feeds = append(feeds, newFeed)
 	ID++
 }
+
 func DeleteNewsFeed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	param := chi.URLParam(r, "id")
+	param := chiro.URLParam(r, "id")
 	paramsID, _ := strconv.Atoi(param)
 	for index, curFeed := range feeds {
 		if curFeed.Id == paramsID {
@@ -123,12 +129,13 @@ func DeleteNewsFeed(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	//fmt.Println(feeds)
+	// fmt.Println(feeds)
 	WriteJsonResponse(w, http.StatusOK, feeds)
 }
+
 func UpdateNewsFeed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	param := chi.URLParam(r, "id")
+	param := chiro.URLParam(r, "id")
 	paramID, _ := strconv.Atoi(param)
 	var newFeed newsfeed.Item
 	err := json.NewDecoder(r.Body).Decode(&newFeed)
@@ -140,12 +147,15 @@ func UpdateNewsFeed(w http.ResponseWriter, r *http.Request) {
 		if curFeed.Id == paramID {
 			newFeed.Id = paramID
 			feeds[index] = newFeed
-			json.NewEncoder(w).Encode(feeds)
+			err := json.NewEncoder(w).Encode(feeds)
+			log.Println(err)
 			return
 		}
 	}
-	json.NewEncoder(w).Encode("No data")
+	err = json.NewEncoder(w).Encode("No data")
+	log.Println(err)
 }
+
 func Login(w http.ResponseWriter, r *http.Request) {
 	var creds newsfeed.Credentials
 	err := json.NewDecoder(r.Body).Decode(&creds)
@@ -220,18 +230,18 @@ func StartServer(port int) {
 	InitCred()
 	InitDB()
 
-	r := chi.NewRouter()
+	r := chiro.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Post("/login", Login)
 	r.Post("/refresh-token", RefreshToken) // Refresh Token API
-	r.Group(func(r chi.Router) {
+	r.Group(func(r chiro.Router) {
 		// jwtauth-> will learn later
 		r.Use(jwtauth.Verifier(TokenAuth))
 		r.Use(jwtauth.Authenticator)
-		r.Route("/newsfeeds", func(r chi.Router) {
+		r.Route("/newsfeeds", func(r chiro.Router) {
 			r.Get("/", GetNewsFeeds)
 			r.Get("/{id}", GetNewsFeed)
 			r.Post("/", CreateNewsFeed)
@@ -240,13 +250,13 @@ func StartServer(port int) {
 		})
 		r.Post("/logout", Logout)
 	})
-	//port := 5050
+	// port := 5050
 	Server := &http.Server{
 		Addr:    ":" + strconv.Itoa(port),
 		Handler: r,
 	}
 	fmt.Println("Serving on " + strconv.Itoa(port))
-	//http.ListenAndServe(strconv.Itoa(port), r)
+	// http.ListenAndServe(strconv.Itoa(port), r)
 	fmt.Println(Server.ListenAndServe())
 }
 
@@ -264,7 +274,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// নতুন Access Token তৈরি
+	// new Access Token
 	accessExpireTime := time.Now().Add(10 * time.Minute)
 	_, newAccessToken, err := TokenAuth.Encode(map[string]interface{}{
 		"aud": username,
@@ -275,7 +285,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// নতুন Access Token পাঠানো
+	// নAccess Token
 	w.Header().Set("Authorization", "Bearer "+newAccessToken)
 	w.WriteHeader(http.StatusOK)
 }

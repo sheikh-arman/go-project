@@ -23,7 +23,12 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
+	defer func() {
+		err = conn.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	for {
 		messageType, msg, err := conn.ReadMessage()
@@ -42,7 +47,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func test() {
+func TestWebSocket() {
 	http.HandleFunc("/ws", handleConnections)
 
 	log.Println("WebSocket server started on ws://localhost:8080/ws")

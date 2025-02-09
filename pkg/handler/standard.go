@@ -2,10 +2,11 @@ package handler
 
 import (
 	"fmt"
-	"golang.org/x/net/websocket"
 	"io"
 	"net/http"
 	"time"
+
+	"golang.org/x/net/websocket"
 )
 
 // Allow all origins
@@ -54,7 +55,6 @@ func (s *Server) readLoop(ws *websocket.Conn) {
 	buf := make([]byte, 1024)
 	for {
 		n, err := ws.Read(buf)
-
 		if err != nil {
 			if err == io.EOF {
 				fmt.Println("Client disconnected or read error:", err)
@@ -89,7 +89,8 @@ func (s *Server) handleWSOrderbook(ws *websocket.Conn) {
 	fmt.Println("New incoming connection from client:", ws.RemoteAddr())
 	for {
 		payload := fmt.Sprintf("orderbook data ->%d\n", time.Now().UnixNano())
-		ws.Write([]byte(payload))
+		_, err := ws.Write([]byte(payload))
+		fmt.Println(err)
 		time.Sleep(2 * time.Second)
 	}
 }

@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 func Handle() {
@@ -11,6 +12,6 @@ func Handle() {
 
 	log.Info().Msg("Starting Handle server")
 	log.Error().Msg("This is not error actually")
-	//test()
+	// test()
 	testStandard()
 }
