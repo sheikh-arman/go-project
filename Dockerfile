@@ -7,10 +7,10 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod tidy
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o api-server .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o go-project .
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=builder /app/api-server .
+COPY --from=builder /app/go-project .
 ENTRYPOINT ["./go-project"]
 CMD ["appscode-api-server"]
