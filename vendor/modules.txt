@@ -1,3 +1,7 @@
+# filippo.io/edwards25519 v1.1.0
+## explicit; go 1.20
+filippo.io/edwards25519
+filippo.io/edwards25519/field
 # github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0
 ## explicit; go 1.17
 github.com/decred/dcrd/dcrec/secp256k1/v4
@@ -8,9 +12,13 @@ github.com/go-chi/chi/middleware
 # github.com/go-chi/chi/v5 v5.2.1
 ## explicit; go 1.20
 github.com/go-chi/chi/v5
+github.com/go-chi/chi/v5/middleware
 # github.com/go-chi/jwtauth v1.2.0
 ## explicit; go 1.15
 github.com/go-chi/jwtauth
+# github.com/go-sql-driver/mysql v1.8.1
+## explicit; go 1.18
+github.com/go-sql-driver/mysql
 # github.com/goccy/go-json v0.10.3
 ## explicit; go 1.19
 github.com/goccy/go-json

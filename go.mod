@@ -1,11 +1,12 @@
 module github.com/sheikh-arman/go-project
 
-go 1.22.1
+go 1.23.4
 
 require (
 	github.com/go-chi/chi v1.5.5
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-chi/jwtauth v1.2.0
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gorilla/websocket v1.5.3
 	github.com/lestrrat-go/jwx v1.2.30
 	github.com/rs/zerolog v1.33.0
@@ -15,6 +16,7 @@ require (
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
