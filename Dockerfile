@@ -13,4 +13,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/api-server .
 ENTRYPOINT ["./go-project"]
-CMD ["appscodeapiserver"]
+CMD ["appscode-api-server"]
