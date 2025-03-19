@@ -36,19 +36,19 @@ func DbConnect() {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	sqlDB.SetConnMaxIdleTime(time.Hour)
 	sqlDB.SetConnMaxLifetime(time.Hour)
-	query := fmt.Sprintf("create database if not exists arman2")
-	query = fmt.Sprintf("show databases")
-	var val []string
-	db.Exec(query).Scan(&val)
-	fmt.Println(val)
-	for _, val := range val {
-		fmt.Println(val)
-	}
+	//query := fmt.Sprintf("create database if not exists arman2")
+	//query := fmt.Sprintf("show databases")
+	//var val []string
+	//db.Exec(query).Scan(&val)
+	//fmt.Println(val)
+	//for _, val := range val {
+	//	fmt.Println(val) =
+	//}
 	//err = sqlDB.Ping()
 	//if err != nil {
 	//	fmt.Println("error in ping-> ", err)
 	//}
-	//showDatabases(db)
+	showDatabases(db)
 	fmt.Println("connected to database, hurrah!!!")
 }
 
