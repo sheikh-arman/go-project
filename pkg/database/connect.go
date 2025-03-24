@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+var (
+	dataInserted int
+	mutex        sync.Mutex
+)
+
 // User model
 type User struct {
 	ID   uint   `gorm:"primaryKey"`
@@ -143,6 +148,7 @@ func WriteTest(db *gorm.DB) {
 	wg := sync.WaitGroup{}
 
 	start := time.Now()
+	dataInserted = 0
 	for i := 0; i < numWorkers; i++ {
 		wg.Add(1)
 		go func(workerID int) {
@@ -153,6 +159,7 @@ func WriteTest(db *gorm.DB) {
 
 	wg.Wait()
 	fmt.Println("Total time taken for write:", time.Since(start))
+	fmt.Println("Total dataInserted", dataInserted)
 }
 
 func insertRecords(db *gorm.DB, workerID, num int) {
@@ -161,5 +168,9 @@ func insertRecords(db *gorm.DB, workerID, num int) {
 		if err := db.Create(&user).Error; err != nil {
 			log.Printf("Worker %d: Insert failed: %v", workerID, err)
 		}
+		mutex.Lock()
+		dataInserted = dataInserted + 1
+		mutex.Unlock()
+
 	}
 }
