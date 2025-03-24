@@ -73,7 +73,7 @@ func showDatabases(db *gorm.DB) {
 
 func DatabaseLoadTest(db *gorm.DB) {
 
-	ReadTest(db)
+	//ReadTest(db)
 	WriteTest(db)
 }
 
@@ -106,6 +106,13 @@ func testQuery(db *gorm.DB, id int) {
 }
 
 func WriteTest(db *gorm.DB) {
+
+	err := db.Exec("create database if not exists testDB").Error
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
 	user := os.Getenv("MYSQL_ROOT_USER")
 	password := os.Getenv("MYSQL_ROOT_PASSWORD")
 	host := os.Getenv("MYSQL_ROOT_HOST")
@@ -119,7 +126,7 @@ func WriteTest(db *gorm.DB) {
 	fmt.Println("MYSQL_ROOT_USER:", user, "MYSQL_PASSWORD", password, "MYSQL_HOST", host, "MYSQL_PORT", port)
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, "testDB")
 	fmt.Println("connecting to database...", connectionString)
-	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
