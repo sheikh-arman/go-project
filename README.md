@@ -18,17 +18,15 @@ cobra-cli init
 
 cobra-cli add start
 
-cobra-cli add subcommand --parent startCmd
 
-go build -o live-chat
+grpc:
 
-./live-chat start
+protoc --go_out=. --go-grpc_out=. --proto_path=./pkg/proto test.proto 
 
-expose the websocket on ws://localhost:8080/ws
+./go-project server
 
+./go-project client
 
-orderbook api on ws://localhost:8080/orderbook 
-orderbook will fetch data in every 2 second
 
 
 
