@@ -4,9 +4,13 @@ https://www.youtube.com/watch?v=W7HK2yD0_U0&list=PLQ9_95hffac8_0bj5oeCe4FdxeNZi0
 
 
 @echo "Installing Go plugins for protoc..."
+
 	sudo apt install protobuf-compiler -y
+ 
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+ 
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+ 
 	export PATH="$PATH:$(go env GOPATH)/bin"
 
 
